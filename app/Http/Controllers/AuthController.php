@@ -10,20 +10,10 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-/**
- * Contrôleur d'authentification JWT.
- *
- * Gère : inscription, connexion, déconnexion, refresh token et profil.
- */
 class AuthController extends BaseApiController
 {
     public function __construct(private readonly AuthService $authService) {}
 
-    /**
-     * POST /api/auth/register
-     *
-     * Inscription d'un nouvel utilisateur.
-     */
     public function register(RegisterRequest $request): JsonResponse
     {
         $result = $this->authService->register($request->validated());
@@ -31,11 +21,6 @@ class AuthController extends BaseApiController
         return $this->created($result, 'Inscription réussie. Bienvenue !');
     }
 
-    /**
-     * POST /api/auth/login
-     *
-     * Connexion avec email + mot de passe.
-     */
     public function login(LoginRequest $request): JsonResponse
     {
         try {
@@ -50,11 +35,6 @@ class AuthController extends BaseApiController
         }
     }
 
-    /**
-     * POST /api/auth/logout
-     *
-     * Déconnexion (invalidation du token JWT).
-     */
     public function logout(): JsonResponse
     {
         $this->authService->logout();
@@ -62,11 +42,6 @@ class AuthController extends BaseApiController
         return $this->success(null, 'Déconnexion réussie.');
     }
 
-    /**
-     * POST /api/auth/refresh
-     *
-     * Renouvellement du token JWT.
-     */
     public function refresh(): JsonResponse
     {
         $result = $this->authService->refresh();
@@ -74,11 +49,6 @@ class AuthController extends BaseApiController
         return $this->success($result, 'Token renouvelé avec succès.');
     }
 
-    /**
-     * GET /api/auth/me
-     *
-     * Retourne le profil de l'utilisateur authentifié.
-     */
     public function me(Request $request): JsonResponse
     {
         return $this->success(
@@ -87,11 +57,6 @@ class AuthController extends BaseApiController
         );
     }
 
-    /**
-     * PUT /api/auth/profile
-     *
-     * Mise à jour du profil de l'utilisateur connecté.
-     */
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = $this->authService->updateProfile(

@@ -5,12 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 
-/**
- * Contrôleur de base pour l'API REST.
- *
- * Fournit des méthodes helper pour construire
- * des réponses JSON cohérentes dans toute l'API.
- */
 abstract class BaseApiController extends Controller
 {
     /**
@@ -50,17 +44,11 @@ abstract class BaseApiController extends Controller
         return response()->json($response, $status);
     }
 
-    /**
-     * Réponse 201 Created.
-     */
     protected function created(mixed $data, string $message = 'Ressource créée avec succès'): JsonResponse
     {
         return $this->success($data, $message, 201);
     }
 
-    /**
-     * Réponse 204 No Content (suppression).
-     */
     protected function noContent(): JsonResponse
     {
         return response()->json(null, 204);

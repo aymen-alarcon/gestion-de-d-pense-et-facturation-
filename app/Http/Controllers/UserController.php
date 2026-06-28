@@ -8,24 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
-/**
- * Contrôleur de gestion des utilisateurs (réservé aux administrateurs).
- *
- * Endpoints :
- *   GET    /api/admin/users           → liste tous les utilisateurs
- *   GET    /api/admin/users/{id}      → détail utilisateur
- *   POST   /api/admin/users           → créer un utilisateur
- *   PUT    /api/admin/users/{id}      → modifier un utilisateur
- *   PATCH  /api/admin/users/{id}/toggle-actif → activer/désactiver
- *   DELETE /api/admin/users/{id}      → supprimer un utilisateur
- */
 class UserController extends BaseApiController
 {
-    /**
-     * GET /api/admin/users
-     *
-     * Retourne la liste paginée de tous les utilisateurs avec leur rôle.
-     */
     public function index(Request $request): JsonResponse
     {
         $users = User::with('roles')
@@ -46,9 +30,6 @@ class UserController extends BaseApiController
         return $this->success($users, 'Utilisateurs récupérés.');
     }
 
-    /**
-     * GET /api/admin/users/{id}
-     */
     public function show(int $id): JsonResponse
     {
         $user = User::with(['roles', 'depenses', 'factures'])->findOrFail($id);
@@ -56,11 +37,6 @@ class UserController extends BaseApiController
         return $this->success($user, 'Utilisateur récupéré.');
     }
 
-    /**
-     * POST /api/admin/users
-     *
-     * Création d'un utilisateur par l'administrateur.
-     */
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -84,11 +60,6 @@ class UserController extends BaseApiController
         return $this->created($user->load('roles'), 'Utilisateur créé avec succès.');
     }
 
-    /**
-     * PUT /api/admin/users/{id}
-     *
-     * Modification d'un utilisateur par l'administrateur.
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $user = User::findOrFail($id);
@@ -117,11 +88,6 @@ class UserController extends BaseApiController
         return $this->success($user->fresh('roles'), 'Utilisateur mis à jour.');
     }
 
-    /**
-     * PATCH /api/admin/users/{id}/toggle-actif
-     *
-     * Active ou désactive un compte utilisateur.
-     */
     public function toggleActif(int $id): JsonResponse
     {
         $user = User::findOrFail($id);
@@ -135,11 +101,6 @@ class UserController extends BaseApiController
         );
     }
 
-    /**
-     * DELETE /api/admin/users/{id}
-     *
-     * Supprime un utilisateur (soft delete via ses dépenses / factures).
-     */
     public function destroy(int $id): JsonResponse
     {
         $user = User::findOrFail($id);
